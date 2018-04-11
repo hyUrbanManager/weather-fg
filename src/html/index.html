@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>天气</title>
+</head>
+<body>
+
+<link rel="stylesheet" href="../css/index.css" type="text/css">
+
+<script src="../js/libs/vue.js"></script>
+<script src="../js/libs/axios.js"></script>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<div id="app">
+  <h1>选择查询的城市：（北京/beijing，上海/shanghai，广州/guangzhou）</h1>
+
+  <input type="text" title="cityName" v-model="cityName">
+  <button type="button" onclick="onClick()">查询</button>
+
+  <p v-if="!isSuccess" v-cloak>{{ tip }}</p>
+
+  <div v-if="isSuccess" v-cloak>
+    <h3><code>basic</code> 基础信息</h3>
+    <table>
+      <tbody>
+      <tr>
+        <td>地区／城市名称</td>
+        <td>{{ HeWeather6.basic.location }}</td>
+      </tr>
+      <tr>
+        <td>地区／城市ID</td>
+        <td>{{ HeWeather6.basic.cid }}</td>
+      </tr>
+      <tr>
+        <td>地区／城市纬度</td>
+        <td>{{ HeWeather6.lon }}</td>
+      </tr>
+      <tr>
+        <td>地区／城市经度</td>
+        <td>{{ HeWeather6.basic.lat }}</td>
+      </tr>
+      <tr>
+        <td>该地区／城市的上级城市</td>
+        <td>{{ HeWeather6.basic.parent_city }}</td>
+      </tr>
+      <tr>
+        <td>该地区／城市所属行政区域</td>
+        <td>{{ HeWeather6.basic.admin_area }}</td>
+      </tr>
+      <tr>
+        <td>该地区／城市所属国家名称</td>
+        <td>{{ HeWeather6.basic.cnty }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>该地区／城市所在时区</td>
+        <td>{{ HeWeather6.basic.tz }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <h3><code>update</code> 接口更新时间</h3>
+    <table>
+      <tbody>
+      <tr>
+        <td>当地时间，24小时制</td>
+        <td>{{ HeWeather6.update.loc }}</td>
+      </tr>
+      <tr>
+        <td>UTC时间，24小时制</td>
+        <td>{{ HeWeather6.update.utc }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <h3><code>daily_forecast</code> 天气预报</h3>
+    <div v-for="fc in HeWeather6.daily_forecast">
+      <table>
+        <tbody>
+        <tr>
+          <td>预报日期</td>
+          <td>{{ fc.date }}</td>
+        </tr>
+        <tr>
+          <td>日出时间</td>
+          <td>{{ fc.sr }}</td>
+        </tr>
+        <tr>
+          <td>日落时间</td>
+          <td>{{ fc.ss }}</td>
+        </tr>
+        <tr>
+          <td>月升时间</td>
+          <td>{{ fc.mr }}</td>
+        </tr>
+        <tr>
+          <td>月落时间</td>
+          <td>{{ fc.ms }}</td>
+        </tr>
+        <tr>
+          <td>最高温度</td>
+          <td>{{ fc.tmp_max }}</td>
+        </tr>
+        <tr>
+          <td>最低温度</td>
+          <td>{{ fc.tmp_min }}</td>
+        </tr>
+        <tr>
+          <td>白天天气状况代码</td>
+          <td>{{ fc.cond_code_d }}</td>
+        </tr>
+        <tr>
+          <td>晚间天气状况代码</td>
+          <td>{{ fc.cond_code_n }}</td>
+        </tr>
+        <tr>
+          <td>白天天气状况描述</td>
+          <td>{{ fc.cond_txt_d }}</td>
+        </tr>
+        <tr>
+          <td>晚间天气状况描述</td>
+          <td>{{ fc.cond_txt_n }}</td>
+        </tr>
+        <tr>
+          <td>风向360角度</td>
+          <td>{{ fc.wind_deg }}</td>
+        </tr>
+        <tr>
+          <td>风向</td>
+          <td>{{ fc.wind_dir }}</td>
+        </tr>
+        <tr>
+          <td>风力</td>
+          <td>{{ fc.wind_sc }}</td>
+        </tr>
+        <tr>
+          <td>风速，公里/小时</td>
+          <td>{{ fc.wind_spd }}</td>
+        </tr>
+        <tr>
+          <td>相对湿度</td>
+          <td>{{ fc.hum }}</td>
+        </tr>
+        <tr>
+          <td>降水量</td>
+          <td>{{ fc.pcpn }}</td>
+        </tr>
+        <tr>
+          <td>降水概率</td>
+          <td>{{ fc.pop }}</td>
+        </tr>
+        <tr>
+          <td>大气压强</td>
+          <td>{{ fc.pres }}</td>
+        </tr>
+        <tr>
+          <td>紫外线强度指数</td>
+          <td>{{ fc.uv_index }}</td>
+        </tr>
+        <tr>
+          <td>能见度，单位：公里</td>
+          <td>{{ fc.vis }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3><code>now</code> 实况天气</h3>
+    <table>
+      <tbody>
+      <tr>
+        <td>体感温度，默认单位：摄氏度</td>
+        <td>{{ HeWeather6.now.fl }}</td>
+      </tr>
+      <tr>
+        <td>温度，默认单位：摄氏度</td>
+        <td>{{ HeWeather6.now.tmp }}</td>
+      </tr>
+      <tr>
+        <td>实况天气状况代码</td>
+        <td>{{ HeWeather6.now.cond_code }}</td>
+      </tr>
+      <tr>
+        <td>实况天气状况代码</td>
+        <td>{{ HeWeather6.now.cond_txt }}</td>
+      </tr>
+      <tr>
+        <td>风向360角度</td>
+        <td>{{ HeWeather6.now.wind_deg }}</td>
+      </tr>
+      <tr>
+        <td>风向</td>
+        <td>{{ HeWeather6.now.wind_dir }}</td>
+      </tr>
+      <tr>
+        <td>风力</td>
+        <td>{{ HeWeather6.now.wind_sc }}</td>
+      </tr>
+      <tr>
+        <td>风速，公里/小时</td>
+        <td>{{ HeWeather6.now.wind_spd }}</td>
+      </tr>
+      <tr>
+        <td>相对湿度</td>
+        <td>{{ HeWeather6.now.hum }}</td>
+      </tr>
+      <tr>
+        <td>降水量</td>
+        <td>{{ HeWeather6.now.pcpn }}</td>
+      </tr>
+      <tr>
+        <td>大气压强</td>
+        <td>{{ HeWeather6.now.pres }}</td>
+      </tr>
+      <tr>
+        <td>能见度，默认单位：公里</td>
+        <td>{{ HeWeather6.now.vis }}</td>
+      </tr>
+      <tr>
+        <td>云量</td>
+        <td>{{ HeWeather6.now.cloud }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <h3><code>hourly</code> 逐小时预报</h3>
+    <div v-for="h in HeWeather6.hourly">
+      <table>
+        <tbody>
+        <tr>
+          <td>预报时间</td>
+          <td>{{ h.time }}</td>
+        </tr>
+        <tr>
+          <td>温度</td>
+          <td>{{ h.tmp }}</td>
+        </tr>
+        <tr>
+          <td>天气状况代码</td>
+          <td>{{ h.cond_code }}</td>
+        </tr>
+        <tr>
+          <td>天气状况代码</td>
+          <td>{{ h.cond_txt }}</td>
+        </tr>
+        <tr>
+          <td>风向360角度</td>
+          <td>{{ h.wind_deg }}</td>
+        </tr>
+        <tr>
+          <td>风向</td>
+          <td>{{ h.wind_dir }}</td>
+        </tr>
+        <tr>
+          <td>风力</td>
+          <td>{{ h.wind_sc }}</td>
+        </tr>
+        <tr>
+          <td>风速，公里/小时</td>
+          <td>{{ h.wind_spd }}</td>
+        </tr>
+        <tr>
+          <td>相对湿度</td>
+          <td>{{ h.hum }}</td>
+        </tr>
+        <tr>
+          <td>大气压强</td>
+          <td>{{ h.pres }}</td>
+        </tr>
+        <tr>
+          <td>露点温度</td>
+          <td>{{ h.dew }}</td>
+        </tr>
+        <tr>
+          <td>云量</td>
+          <td>{{ h.cloud }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3><code>lifestyle</code> 生活指数</h3>
+    <div v-for="lf in HeWeather6.lifestyle">
+      <table>
+        <tbody>
+        <tr>
+          <td>生活指数简介</td>
+          <td>{{ lf.brf }}</td>
+        </tr>
+        <tr>
+          <td>生活指数详细描述</td>
+          <td>{{ lf.txt }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3><code>lifestyle_forecast</code> 生活指数未来3天预报</h3>
+    <div v-for="lffc in HeWeather6.lifestyle_forcast">
+      <table>
+        <tbody>
+        <tr>
+          <td>预报日期，例如2017-12-30</td>
+          <td>{{ lffc.date }}</td>
+        </tr>
+        <tr>
+          <td>生活指数简介</td>
+          <td>{{ lffc.brf }}</td>
+        </tr>
+        <tr>
+          <td>生活指数详细描述</td>
+          <td>{{ lffc.txt }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3><code>satuts</code> 接口状态</h3>
+    <table>
+      <tbody>
+      <tr>
+        <td>status</td>
+        <td>{{ HeWeather6.status }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="../js/index.js"></script>
+
+</body>
+</html>

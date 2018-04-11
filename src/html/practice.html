@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>practice</title>
+</head>
+<body>
+
+<div id="app">
+  {{ message }}
+  <ul>
+    <li v-for="person in people">
+      {{ person.name }} is {{ person.age }} years old.
+    </li>
+  </ul>
+
+  <span v-bind:title="time">
+    鼠标悬停查看信息！ {{ time }}
+  </span>
+
+  <p v-if="seen">i am here.</p>
+
+  <button v-on:click="updateBtn">{{ button }}</button>
+
+  <p>{{ inputText }}</p>
+  <p><input v-model="inputText"></p>
+  <p><input v-model="inputText"></p>
+
+</div>
+
+<!--引入库-->
+<script src="../js/libs/vue.js"></script>
+
+<!--js-->
+<script type="text/javascript">
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'hello, vue!',
+      people: [
+        {name: 'none', age: 0}
+      ],
+      time: '现在时间：' + new Date().toISOString(),
+      seen: new Date().getSeconds() % 3 <= 3,
+      button: 'vue!',
+      inputText: 'vue, js, html!'
+    },
+
+    methods: {
+      updateBtn: function () {
+        this.button = this.button.split('').reverse().join('');
+      }
+    }
+  });
+
+  // 异步加载。
+  function update() {
+    fetch('http://127.0.0.1')
+      .then(function (response) {
+        console.log(response);
+        return response.json();
+      })
+      .then(function (result) {
+        app.people = result.people;
+      })
+  }
+</script>
+
+</body>
+</html>
