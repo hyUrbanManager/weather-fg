@@ -13,19 +13,13 @@ var app = new Vue({
     HeWeather6: {},
     tip: '点击查询获取天气数据',
     config: {},
-
-    created: readConfig()
+  },
+  config: {
+    "version": 1.0,
+    "url": "https://free-api.heweather.com/s6/weather",
+    "apiKey": "115779cde0654623af70fdd34fa52ea1"
   }
 });
-
-/**
- * 读取配置.
- */
-function readConfig() {
-  $.get('../../static/config.json', function (data, status) {
-    app.config = data;
-  })
-}
 
 /**
  * 查询点击事件。

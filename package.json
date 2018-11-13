@@ -1,0 +1,18 @@
+{
+  "name": "weather-fg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hyUrbanManager/weather-fg/issues"
+  },
+  "homepage": "https://github.com/hyUrbanManager/weather-fg#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
