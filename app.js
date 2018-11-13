@@ -7,6 +7,6 @@ app.get('/', (req, res) => {
     res.sendfile('./dist/html/index.html')
 })
 
-app.listen(8080, () => {
+app.listen(80, () => {
     console.log('listening...')
 })
