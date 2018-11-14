@@ -5,7 +5,7 @@
 var app = new Vue({
   el: '#app',
   data: {
-    cityName: 'beijing',
+    cityName: '广州',
     json: '',
     obj: {},
 
